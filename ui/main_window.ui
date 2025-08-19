@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>976</width>
-    <height>636</height>
+    <width>940</width>
+    <height>569</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -507,7 +507,7 @@
                </size>
               </property>
               <property name="placeholderText">
-               <string>Search anime...</string>
+               <string>Search product...</string>
               </property>
              </widget>
             </item>
@@ -605,7 +605,7 @@
        <item>
         <widget class="QStackedWidget" name="stackedWidget">
          <property name="currentIndex">
-          <number>2</number>
+          <number>4</number>
          </property>
          <widget class="QWidget" name="homePage">
           <layout class="QGridLayout" name="gridLayout_2">
@@ -657,7 +657,7 @@
                  </font>
                 </property>
                 <property name="text">
-                 <string>Welcome to Crunchyroll, the world’s largest home for anime!</string>
+                 <string>Welcome to SmartZone, the world’s largest home for badminton products!</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -694,7 +694,7 @@
                   <string/>
                  </property>
                  <property name="pixmap">
-                  <pixmap>assets/home_wallpaper.png</pixmap>
+                  <pixmap>assets/home.png</pixmap>
                  </property>
                  <property name="scaledContents">
                   <bool>true</bool>
@@ -772,7 +772,7 @@
                     </size>
                    </property>
                    <property name="text">
-                    <string>TOP ANIME</string>
+                    <string>TOP PRODUCTS</string>
                    </property>
                    <property name="checkable">
                     <bool>true</bool>
@@ -841,13 +841,13 @@
                 <property name="widgetResizable">
                  <bool>true</bool>
                 </property>
-                <widget class="QWidget" name="animeListWidget">
+                <widget class="QWidget" name="productListWidget">
                  <property name="geometry">
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>904</width>
-                   <height>533</height>
+                   <width>910</width>
+                   <height>542</height>
                   </rect>
                  </property>
                 </widget>
@@ -918,7 +918,7 @@
                <number>0</number>
               </property>
               <item>
-               <widget class="QPushButton" name="searchAnime">
+               <widget class="QPushButton" name="searchProduct">
                 <property name="minimumSize">
                  <size>
                   <width>100</width>
@@ -931,7 +931,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="inputAnime"/>
+               <widget class="QLineEdit" name="inputProduct"/>
               </item>
               <item>
                <widget class="QPushButton" name="addButton">
@@ -976,7 +976,7 @@
             </widget>
            </item>
            <item row="2" column="0">
-            <widget class="QListWidget" name="animeList"/>
+            <widget class="QListWidget" name="productList"/>
            </item>
           </layout>
          </widget>
@@ -1068,7 +1068,6 @@
   </widget>
  </widget>
  <resources>
-  <include location="../../Modern_GUI_PyDracula_PySide6_or_PyQt6-master/Modern_GUI_PyDracula_PySide6_or_PyQt6-master/resources.qrc"/>
   <include location="resources.qrc"/>
  </resources>
  <connections/>

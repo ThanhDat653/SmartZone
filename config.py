@@ -2,10 +2,14 @@ import os
 
 
 class Config():
-    LOCAL_DIR = os.getcwd()
-    UI_DIR = os.path.join(LOCAL_DIR, "ui")
+ 
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    UI_DIR = os.path.join(BASE_DIR, "ui")
 
-    JSON_PATH = 'data/data.json'
+    JSON_PATH = os.path.join(BASE_DIR, "data", "data.json")
+
+    # Nếu file chứa user
+    USER_JSON_PATH = os.path.join(BASE_DIR, "data", "user_data.json")
     
     MENU_COLLAPSED_WIDTH = 50
     MENU_FULL_WIDTH = 150
@@ -21,4 +25,4 @@ class Config():
     CRUD_MENU_INDEX= 2
     TVSHOW_PAGE_INDEX = 3
     USER_PAGE_INDEX = 4
-    SEARCH_ANIME_INDEX = 5
+    SEARCH_PRODUCT_INDEX = 5

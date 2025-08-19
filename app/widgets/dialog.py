@@ -11,7 +11,7 @@ try:
 except ImportError:
     pass
 
-from app.models import AnimeItem
+from app.models import ProductItem
 from app.models import date_to_text, format_date
 
 
@@ -78,7 +78,7 @@ class EditDialog(Dialog):
     Edit Dialog
     """
     UI_LOCATION = os.path.join(Config.UI_DIR, "edit_dialog.ui")
-    def __init__(self, edit_item:AnimeItem):
+    def __init__(self, edit_item:ProductItem):
         super().__init__(EditDialog)
         try:
             self.ui = uic.loadUi(self.UI_LOCATION, self)

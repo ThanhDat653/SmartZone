@@ -1,34 +1,29 @@
 [
     {
         "id": 3,
-        "title": "Mononoke Hime",
-        "release_date": "Jul 1997",
-        "image": "ui/images/mononoke-hime.jpg",
-        "rating": 10.0,
-        "link": "None"
+        "title": "Victor Ruyga 1",
+        "release_date": "Jul 2019",
+        "price": 100000000,
+        "image": "SmartZone/ui/images/ryuga.jpg",
+        "rating": 10.0
     },
-    {
-        "id": 0,
-        "title": "Sousou no Frieren",
-        "release_date": "Sep 2023",
-        "image": "ui/images/frieren.jpg",
-        "rating": 9.0,
-        "link": "https://www.crunchyroll.com/series/GG5H5XQX4/frieren-beyond-journeys-end"
-    },
-    {
-        "id": 2,
-        "title": "One Piece",
-        "release_date": "Oct 1999",
-        "image": "ui/images/one-piece.jpg",
-        "rating": 8.0,
-        "link": "https://www.crunchyroll.com/series/GRMG8ZQZR/one-piece"
-    },
-    {
-        "id": 1,
-        "title": "Jujutsu no Kaisen 2nd Season",
-        "release_date": "Jul 2023",
-        "image": "ui/images/jujutsu-kaisen.jpg",
-        "rating": 7.0,
-        "link": "https://www.crunchyroll.com/series/GRDV0019R/jujutsu-kaisen"
-    }
+    
+  {
+    "id": 3,
+    "title": "Victor Ryuga (Metallic)",
+    "release_date": "2023",
+    "price": 100000000,
+    "image": "SmartZone/ui/images/ryugametel.webp",
+    "rating": 10.0
+  },
+  {
+    "id": 4,
+    "title": "Victor Ryuga II Pro",
+    "release_date": "2020",
+    "price": 95000000,
+    "image": "SmartZone/ui/images/ryugapro.jpg",
+    "rating": 8.5
+  }
+  
+
 ]

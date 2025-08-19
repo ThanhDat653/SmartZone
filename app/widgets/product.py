@@ -7,42 +7,41 @@ from PyQt6.QtWidgets import QWidget, QLabel, QGraphicsDropShadowEffect
 
 from config import Config
 try:
-    from ui.anime_column_ui import Ui_AnimeColumn
+    from app import Ui_ProductColumn
 except ImportError:
     pass
-from app.models import AnimeItem
+from app.models import ProductItem
 
 
-class AnimeItemWidget(QWidget):
-    STYLE_LOCATION = os.path.join(Config.UI_DIR, "style_anime.qss")
-    UI_LOCATION = os.path.join(Config.UI_DIR, "anime_column.ui")
-    def __init__(self, anime:AnimeItem):
+class ProductItemWidget(QWidget):
+    STYLE_LOCATION = os.path.join(Config.UI_DIR, "style_product.qss")
+    UI_LOCATION = os.path.join(Config.UI_DIR, "product_column.ui")
+    def __init__(self, product:ProductItem):
         QWidget.__init__(self)
         try:
             self.ui = uic.loadUi(self.UI_LOCATION, self)
         except FileNotFoundError:
-            self.ui = Ui_AnimeColumn()
+            self.ui = Ui_ProductColumn()
             self.ui.setupUi(self)
 
         with open(self.STYLE_LOCATION, "r") as style_file:
             style_config = style_file.read()
         self.setStyleSheet(style_config)
 
-        self.anime = anime
+        self.product = product
         self.display_description()
 
         Animation.drop_shadow_on_hovered(self, self)
-        self.ui.animeCol.mouseDoubleClickEvent = lambda x: self.open_link(self.anime.link)
-        if self.anime.link != 'None':
-            self.ui.animeCol.setToolTip("Double click to watch")
+        
+       
 
     def display_description(self):
-        description_text = self.anime.release_date + "\n" \
-                            + "Rating: " + str(self.anime.rating) +"/10"
-        img_pixmap = QPixmap(self.anime.image)
-        self.ui.animeTitle.setText(self.anime.title)
-        self.ui.animeInfo.setText(description_text)
-        self.ui.animeView.setPixmap(img_pixmap)
+        description_text = str(self.product.rating) +"/10"
+        img_pixmap = QPixmap(self.product.image)
+        self.ui.productTitle.setText(self.product.title)
+        self.ui.productRating.setText(description_text)
+        self.ui.productPrice.setText(str(self.product.price))
+        self.ui.productView.setPixmap(img_pixmap)
 
     def open_link(self, url):
         if url != 'None':

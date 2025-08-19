@@ -4,15 +4,18 @@ from PyQt6 import uic
 from PyQt6.QtWidgets import QMainWindow, QApplication, QMessageBox, QHBoxLayout
 from PyQt6.QtCore import QPropertyAnimation, QEasingCurve, Qt
 from PyQt6.QtGui import QPixmap, QIcon
+import sys
+import json
+from PyQt6  import QtWidgets
 
 from config import Config
 try:
-    from ui.desktop_app_scrollable_ui import Ui_MainWindow
+    from PyQt6 import Ui_MainWindow
 except ImportError:
     pass
 
-from app.models import AnimeDatabase
-from app.widgets.anime import AnimeItemWidget
+from app.models import ProductDatabase
+from app.widgets.product import ProductItemWidget
 from app.widgets.dialog import AddDialog, EditDialog
 
 
@@ -35,14 +38,14 @@ class MainWindow(QMainWindow):
         widgets = self.ui
 
         global database
-        self.dtb = AnimeDatabase()
+        self.dtb = ProductDatabase()
         database = self.dtb
 
         global h_layout 
-        self.horizontal_layout = QHBoxLayout(widgets.animeListWidget)
+        self.horizontal_layout = QHBoxLayout(widgets.productListWidget)
         h_layout = self.horizontal_layout
         h_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        self.layout = AnimeHorizontalLayout()
+        self.layout = ProductHorizontalLayout()
 
         widgets.stackedWidget.setCurrentIndex(Config.HOME_PAGE_INDEX)
         self.setup_leftMenu()
@@ -56,12 +59,12 @@ class MainWindow(QMainWindow):
 
     def setup_CRUD_page(self):
         database.load_data()
-        widgets.animeList.addItems(database.anime_title_list)
-        widgets.animeList.setCurrentRow(0)
-        widgets.addButton.clicked.connect(lambda:AnimeCRUD.add(self))
-        widgets.editButton.clicked.connect(lambda:AnimeCRUD.edit(self))
-        widgets.removeButton.clicked.connect(lambda:AnimeCRUD.delete(self))
-        widgets.searchAnime.clicked.connect(lambda:AnimeCRUD.search(self))
+        widgets.productList.addItems(database.product_title_list)
+        widgets.productList.setCurrentRow(0)
+        widgets.addButton.clicked.connect(lambda:ProductCRUD.add(self))
+        widgets.editButton.clicked.connect(lambda:ProductCRUD.edit(self))
+        widgets.removeButton.clicked.connect(lambda:ProductCRUD.delete(self))
+        widgets.searchProduct.clicked.connect(lambda:ProductCRUD.search(self))
 
     def setup_rank_page(self):
         self.layout.display_layout()
@@ -132,18 +135,18 @@ class MainWindow(QMainWindow):
         widgets.toggleButton.setIcon(icon)
 
 
-class AnimeCRUD():
+class ProductCRUD():
     def add(self):
-        currIndex = widgets.animeList.currentRow()
+        currIndex = widgets.productList.currentRow()
         add_dialog = AddDialog()
         if add_dialog.exec():
             inputs = add_dialog.return_input_fields()
-            widgets.animeList.insertItem(currIndex, inputs["title"])
+            widgets.productList.insertItem(currIndex, inputs["title"])
             database.add_item_from_dict(inputs)
 
     def edit(self):
-        curr_index = widgets.animeList.currentRow()
-        item = widgets.animeList.item(curr_index)
+        curr_index = widgets.productList.currentRow()
+        item = widgets.productList.item(curr_index)
         item_title = item.text()
         edit_item = database.get_item_by_title(item_title)
         if item is not None:
@@ -154,37 +157,37 @@ class AnimeCRUD():
                 database.edit_item_from_dict(item_title, inputs)
 
     def delete(self):
-        curr_index = widgets.animeList.currentRow()
-        item = widgets.animeList.item(curr_index)
+        curr_index = widgets.productList.currentRow()
+        item = widgets.productList.item(curr_index)
         item_title = item.text()
         if item is None:
             return
-        question = QMessageBox.question(self, "Remove Anime",
-                                        "Do you want to remove this anime?",
+        question = QMessageBox.question(self, "Remove Product",
+                                        "Do you want to remove this product?",
                                         QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if question == QMessageBox.StandardButton.Yes:
-            item = widgets.animeList.takeItem(curr_index)
+            item = widgets.productList.takeItem(curr_index)
             database.delete_item(item_title)
 
     def search(self):
-        search_anime_field = widgets.inputAnime.text().strip()
-        if search_anime_field:
-            matched_items = widgets.animeList.findItems(search_anime_field, Qt.MatchFlag.MatchContains)
-            for i in range(widgets.animeList.count()):
-                it = widgets.animeList.item(i)
+        search_product_field = widgets.inputProduct.text().strip()
+        if search_product_field:
+            matched_items = widgets.productList.findItems(search_product_field, Qt.MatchFlag.MatchContains)
+            for i in range(widgets.productList.count()):
+                it = widgets.productList.item(i)
                 it.setHidden(it not in matched_items)
         else:
-            for i in range(widgets.animeList.count()):
-                it = widgets.animeList.item(i)
+            for i in range(widgets.productList.count()):
+                it = widgets.productList.item(i)
                 it.setHidden(False)
     
 
-class AnimeHorizontalLayout():
+class ProductHorizontalLayout():
     def display_layout(self):
-        for anime in database.anime_item_list:
-            anime_item_widget = AnimeItemWidget(anime)
-            h_layout.addWidget(anime_item_widget)
-        widgets.animeListWidget.setLayout(h_layout)
+        for product in database.product_item_list:
+            product_item_widget = ProductItemWidget(product)
+            h_layout.addWidget(product_item_widget)
+        widgets.productListWidget.setLayout(h_layout)
     
     def clear_layout(self):
         while h_layout.count():
@@ -196,11 +199,11 @@ class AnimeHorizontalLayout():
         self.clear_layout()
         
         if item_list is None:
-            item_list = database.anime_item_list
+            item_list = database.product_item_list
         # Update layout from custom item list
-        for anime in item_list:
-            anime_item_widget = AnimeItemWidget(anime)
-            h_layout.addWidget(anime_item_widget)
+        for product in item_list:
+            product_item_widget = ProductItemWidget(product)
+            h_layout.addWidget(product_item_widget)
 
     def sort_by_rating(self):
         database.sort_item_by_rating()
@@ -213,3 +216,142 @@ class AnimeHorizontalLayout():
     def sort_by_alphabet(self):
         database.sort_item_by_title()
         self.update_layout()
+
+
+DATA_FILE = "user_data.json"
+
+# --- Utilities ---
+def load_user_data():
+    if not os.path.exists(DATA_FILE):
+        return {"users": []}
+    with open(DATA_FILE, "r") as f:
+        return json.load(f)
+
+def save_user_data(data):
+    with open(DATA_FILE, "w") as f:
+        json.dump(data, f, indent=4)
+
+def find_user(username):
+    data = load_user_data()
+    for user in data["users"]:
+        if user["username"] == username:
+            return user
+    return None
+
+# # --- Login Window ---
+# class LoginWindow(QtWidgets.QMainWindow, Ui_Login):
+#     def __init__(self):
+#         super().__init__()
+#         self.setupUi(self)
+
+#         if hasattr(self, "signupButton"):
+#             self.signupButton.clicked.connect(self.open_signup)
+
+#         if hasattr(self, "loginButton"):
+#             self.loginButton.clicked.connect(self.login_user)
+
+#     def login_user(self):
+#         username = self.usernameInput.text()
+#         password = self.passwordInput.text()
+
+#         user = find_user(username)
+#         if user and user["password"] == password:
+#             QtWidgets.QMessageBox.information(self, "Success", "Login successful!")
+#         else:
+#             QtWidgets.QMessageBox.warning(self, "Failed", "Invalid username or password.")
+
+#     def open_signup(self):
+#         self.signup_window = SignupWindow()
+#         self.signup_window.show()
+#         self.close()
+
+# # --- Signup Window ---
+# class SignupWindow(QtWidgets.QMainWindow, Ui_Signup):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+
+        if hasattr(self, "backButton"):
+            self.backButton.clicked.connect(self.open_login)
+
+        if hasattr(self, "registerButton"):
+            self.registerButton.clicked.connect(self.register_user)
+
+    def register_user(self):
+        username = self.usernameInput.text()
+        password = self.passwordInput.text()
+
+        if not username or not password:
+            QtWidgets.QMessageBox.warning(self, "Error", "Please fill in all fields.")
+            return
+
+        if find_user(username):
+            QtWidgets.QMessageBox.warning(self, "Error", "Username already exists.")
+            return
+
+        data = load_user_data()
+        data["users"].append({"username": username, "password": password})
+        save_user_data(data)
+
+        QtWidgets.QMessageBox.information(self, "Success", "Account created!")
+        self.open_login()
+
+    def open_login(self):
+        self.login_window = LoginWindow()
+        self.login_window.show()
+        self.close()
+
+class LoginWindow(QtWidgets.QMainWindow):
+    def __init__(self):
+        super().__init__()
+        uic.loadUi("ui/login.ui", self)
+
+        self.signupButton.clicked.connect(self.open_signup)
+        self.loginButton.clicked.connect(self.login_user)
+
+    def login_user(self):
+        username = self.usernameInput.text()
+        password = self.passwordInput.text()
+
+        user = find_user(username)
+        if user and user["password"] == password:
+            QtWidgets.QMessageBox.information(self, "Success", "Login successful!")
+        else:
+            QtWidgets.QMessageBox.warning(self, "Failed", "Invalid username or password.")
+
+    def open_signup(self):
+        self.signup_window = SignupWindow()
+        self.signup_window.show()
+        self.close()
+
+class SignupWindow(QtWidgets.QMainWindow):
+    def __init__(self):
+        super().__init__()
+        uic.loadUi("ui/signup.ui", self)
+
+        self.backButton.clicked.connect(self.open_login)
+        self.registerButton.clicked.connect(self.register_user)
+
+    def register_user(self):
+        username = self.usernameInput.text()
+        password = self.passwordInput.text()
+
+        if not username or not password:
+            QtWidgets.QMessageBox.warning(self, "Error", "Please fill in all fields.")
+            return
+
+        if find_user(username):
+            QtWidgets.QMessageBox.warning(self, "Error", "Username already exists.")
+            return
+
+        data = load_user_data()
+        data["users"].append({"username": username, "password": password})
+        save_user_data(data)
+
+        QtWidgets.QMessageBox.information(self, "Success", "Account created!")
+        self.open_login()
+
+    def open_login(self):
+        self.login_window = LoginWindow()
+        self.login_window.show()
+        self.close()
